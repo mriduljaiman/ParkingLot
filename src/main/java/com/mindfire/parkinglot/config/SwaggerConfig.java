@@ -19,14 +19,14 @@ public class SwaggerConfig {
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("com.mindfire.parkinglot")).paths(PathSelectors.any()).build()
+				.apis(RequestHandlerSelectors.basePackage("com.mindfire")).paths(PathSelectors.any()).build()
 				.apiInfo(apiInfo());
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfo("Parking Lot API", "REST API", "API TOS", "Terms of service",
-				new Contact("mindfire", "https://www.mindfiresolutions.com/", "mridulj@mindfire.com"), "License of API",
+		return new ApiInfo("Issue Service", "Issue REST API", "API TOS", "Terms of service",
+				new Contact("mridul", "https://www.mindfiresolutions.com/", "mridul@mindfires.com"), "License of API",
 				"API license URL", Collections.emptyList());
 	}
-
 }
+
