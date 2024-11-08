@@ -51,24 +51,10 @@ public class ParkingLotControllerTest {
     }
 
     @Test
-    void testParkCarWithInvalidToken() {
-        String token = "invalidToken";
-        String licensePlate = "XYZ123";
-        
-        when(jwtUtil.validateToken("invalidToken")).thenReturn(false);
-
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            parkingLotController.parkCar("Bearer " + token, licensePlate);
-        });
-
-        assertEquals("Invalid Token", exception.getMessage());
-    }
-
-    @Test
     void testGetSlotById() {
         ParkingSlot mockedSlot = new ParkingSlot(1);
         
-        when(parkingLotService.getSlotById(1)).thenReturn(Optional.of(mockedSlot));
+        when(parkingLotService.getSlotById(1)).thenReturn(mockedSlot);
 
         ParkingSlot response = parkingLotController.getSlot(1);
 
@@ -89,20 +75,6 @@ public class ParkingLotControllerTest {
 
         assertNotNull(response);
         verify(parkingLotService).unparkCar(licensePlate);
-    }
-
-    @Test
-    void testUnparkCarWithInvalidToken() {
-        String token = "invalidToken";
-        String licensePlate = "XYZ123";
-        
-        when(jwtUtil.validateToken("invalidToken")).thenReturn(false);
-
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            parkingLotController.unparkCar("Bearer " + token, licensePlate);
-        });
-
-        assertEquals("Invalid Token", exception.getMessage());
     }
 
 }

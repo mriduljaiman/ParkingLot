@@ -23,6 +23,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger",
             "/actuator/**","/api/auth/**"
     };
+	
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+	 public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+	        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+	    }
 
     @Override
     @Bean
@@ -36,6 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/auth/login").permitAll()
             .antMatchers(AUTH_WHITELIST).permitAll()
-            .anyRequest().authenticated();
+            .anyRequest().authenticated()
+            .and()
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

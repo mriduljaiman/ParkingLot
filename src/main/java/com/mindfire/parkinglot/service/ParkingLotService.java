@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mindfire.parkinglot.exception.SlotNotFoundException;
 import com.mindfire.parkinglot.model.ParkingSlot;
 
 @Service
@@ -30,10 +31,11 @@ public class ParkingLotService {
 				});
 	}
 	
-	public Optional<ParkingSlot> getSlotById(int slotId) {
+	public ParkingSlot getSlotById(int slotId) {
         return parkingSlots.stream()
                 .filter(slot -> slot.getSlotId() == slotId)
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new SlotNotFoundException("No slot booked for the given ID: " + slotId));
     }
 
     public Optional<ParkingSlot> unparkCar(String licensePlate) {

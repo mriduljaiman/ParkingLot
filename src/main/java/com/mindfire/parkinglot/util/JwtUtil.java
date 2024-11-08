@@ -23,7 +23,6 @@ public class JwtUtil {
 	}
 	
 	public String createToken(Map<String, Object> claims, String username) {
-		System.out.println("secretKey---" + secretKey);
 		return Jwts.builder()
 				.setClaims(claims)
 				.setSubject(username)
@@ -36,9 +35,9 @@ public class JwtUtil {
 
 	public boolean validateToken(String token) {
 		try {
-	        System.out.println("Validating Token: " + token); 
+//	        System.out.println("Validating Token: " + token); 
 	        String username = extractUsername(token);
-	        System.out.println("Extracted Username: " + username); 
+//	        System.out.println("Extracted Username: " + username); 
 
 	        return username.equals("admin");
 	    } catch (JwtException | IllegalArgumentException ex) {

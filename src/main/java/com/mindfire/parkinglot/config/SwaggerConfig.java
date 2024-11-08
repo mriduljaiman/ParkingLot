@@ -25,7 +25,7 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo() {
 		return new ApiInfo("Issue Service", "Issue REST API", "API TOS", "Terms of service",
-				new Contact("mridul", "https://www.mindfiresolutions.com/", "mridul@mindfires.com"), "License of API",
+				new Contact("mridul", "https://www.mindfiresolutions.com/", "mridulj@mindfiresolutions.com"), "License of API",
 				"API license URL", Collections.emptyList());
 	}
 }
