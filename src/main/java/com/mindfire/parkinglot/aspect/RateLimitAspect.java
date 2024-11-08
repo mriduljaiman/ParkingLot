@@ -16,7 +16,20 @@ import com.mindfire.parkinglot.util.JwtUtil;
 @Aspect
 @Component
 public class RateLimitAspect {
+	
+	private static final String[] AUTH_WHITELIST = {
+//          -- 
+			"/swagger-ui/**",
+         "/swagger-resources/**",
+         "/swagger-ui.html",
+         "/v3/api-docs/**",
+         "/v2/api-docs/**",
+         "/swagger-config",
+         "/webjars/**",
+         "/swagger",
+ };
 
+	
     private final RateLimitService rateLimitService;
     private final JwtUtil jwtUtil;
 
@@ -36,6 +49,13 @@ public class RateLimitAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
+        String path = request.getRequestURI();
+        for (String whitelistPath : AUTH_WHITELIST) {
+	        if (path.startsWith(whitelistPath)) {
+	            return; 
+	        }
+        }
+        
         String clientId = getClientId(request);
 
         if (!rateLimitService.isAllowed(clientId)) {
@@ -57,5 +77,7 @@ public class RateLimitAspect {
         }
         return clientIp;
     }
+    
+    
    
 }

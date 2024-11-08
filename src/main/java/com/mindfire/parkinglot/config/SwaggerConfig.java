@@ -1,32 +1,27 @@
 package com.mindfire.parkinglot.config;
 
-import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
-@EnableSwagger2
 public class SwaggerConfig {
+	
 	@Bean
-	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("com.mindfire")).paths(PathSelectors.any()).build()
-				.apiInfo(apiInfo());
-	}
-
-	private ApiInfo apiInfo() {
-		return new ApiInfo("Issue Service", "Issue REST API", "API TOS", "Terms of service",
-				new Contact("mridul", "https://www.mindfiresolutions.com/", "mridulj@mindfiresolutions.com"), "License of API",
-				"API license URL", Collections.emptyList());
+	public OpenAPI customOpenAPI() {
+		
+		return new OpenAPI()
+				.info(new Info().title("parking lot"))				
+				.addSecurityItem(new SecurityRequirement().addList("mindfire"))
+				.components(new Components().addSecuritySchemes("mindfire", new SecurityScheme()
+						.name("mindfire").type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
+		
 	}
 }
 

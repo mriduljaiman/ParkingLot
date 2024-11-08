@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
 	    public ResponseEntity<String> handleSlotNotFoundException(SlotNotFoundException e) {
 	        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 	    }
-
+	 
 	    @ExceptionHandler(RuntimeException.class)
 	    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
 	        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

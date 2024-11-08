@@ -15,13 +15,16 @@ import com.mindfire.parkinglot.security.JwtAuthenticationFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String[] AUTH_WHITELIST = {
-            // -- swagger ui
-            "/swagger-resources/**",
-            "/swagger-ui.html",
-            "/v2/api-docs",
+//             -- 
+			"/swagger-ui/**",
+//            "/swagger-resources/**",
+//            "/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/swagger-config",
             "/webjars/**",
             "/swagger",
-            "/actuator/**","/api/auth/**"
+            "/actuator/**",
+            "/auth/**"
     };
 	
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -40,7 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
-            .antMatchers("/auth/login").permitAll()
             .antMatchers(AUTH_WHITELIST).permitAll()
             .anyRequest().authenticated()
             .and()

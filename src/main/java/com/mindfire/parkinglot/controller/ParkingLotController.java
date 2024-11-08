@@ -1,5 +1,6 @@
 package com.mindfire.parkinglot.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mindfire.parkinglot.model.ApiResponce;
 import com.mindfire.parkinglot.model.ParkingSlot;
 import com.mindfire.parkinglot.service.ParkingLotService;
 
@@ -15,7 +17,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -36,16 +37,18 @@ public class ParkingLotController {
 	 * @return parking slot info
 	 */
 	@ApiOperation(value = "Park a car in a slot", notes = "Parks a car in the first available slot.")
-    @ApiResponses(value = {
+	@ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully parked the car", 
                          response = ParkingSlot.class),
             @ApiResponse(code = 400, message = "Parking lot is full")
     })
 	@PostMapping("/park")
-	public ParkingSlot parkCar(@RequestHeader("Authorization") String token, @RequestParam String licensePlate) {
-		return parkingLotService.parkCar(licensePlate).orElseThrow(() -> new RuntimeException("Parking lot is full"));
-
-	}
+	public ResponseEntity<ApiResponce<ParkingSlot>> parkCar(@RequestParam String licensePlate) {
+        ParkingSlot slot = parkingLotService.parkCar(licensePlate)
+                .orElseThrow(() -> new RuntimeException("Parking lot is full"));
+        ApiResponce<ParkingSlot> response = new ApiResponce<>(true, "Car parked successfully", slot);
+        return ResponseEntity.ok(response);
+    }
 
 	/**
      * Get the parking slot details by ID.
@@ -60,9 +63,11 @@ public class ParkingLotController {
             @ApiResponse(code = 404, message = "Slot not found for the given ID")
     })
 	  @GetMapping("/slot/{id}")
-	    public ParkingSlot getSlot(@PathVariable int id) {
-	        return parkingLotService.getSlotById(id); // Will throw SlotNotFoundException if slot not found
-	    }
+      public ResponseEntity<ApiResponce<ParkingSlot>> getSlot(@PathVariable int id) {
+        ParkingSlot slot = parkingLotService.getSlotById(id);
+        ApiResponce<ParkingSlot> response = new ApiResponce<>(true, "Slot retrieved successfully", slot);
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * Unpark a car.
@@ -78,8 +83,10 @@ public class ParkingLotController {
             @ApiResponse(code = 400, message = "Car not found")
     })
 	@PostMapping("/unpark")
-	public ParkingSlot unparkCar(@RequestHeader("Authorization") String token, @RequestParam String licensePlate) {
-		return parkingLotService.unparkCar(licensePlate).orElseThrow(() -> new RuntimeException("Car not found"));
-	}
-
+    public ResponseEntity<ApiResponce<ParkingSlot>> unparkCar(@RequestParam String licensePlate) {
+        ParkingSlot slot = parkingLotService.unparkCar(licensePlate)
+                .orElseThrow(() -> new RuntimeException("Car not found"));
+        ApiResponce<ParkingSlot> response = new ApiResponce<>(true, "Car unparked successfully", slot);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
+import com.mindfire.parkinglot.model.ApiResponce;
 import com.mindfire.parkinglot.model.ParkingSlot;
 import com.mindfire.parkinglot.service.ParkingLotService;
 import com.mindfire.parkinglot.util.JwtUtil;
@@ -44,9 +46,16 @@ public class ParkingLotControllerTest {
         when(jwtUtil.validateToken("validToken")).thenReturn(true);
         when(parkingLotService.parkCar(licensePlate)).thenReturn(Optional.of(mockedSlot));
 
-        ParkingSlot response = parkingLotController.parkCar("Bearer " + token, licensePlate);
+        ResponseEntity<ApiResponce<ParkingSlot>> responseEntity = parkingLotController.parkCar(licensePlate);
 
-        assertNotNull(response);
+        assertNotNull(responseEntity);
+        assertEquals(200, responseEntity.getStatusCodeValue());
+        
+        ApiResponce<ParkingSlot> apiResponse = responseEntity.getBody();
+        assertNotNull(apiResponse);
+        assertEquals("Car parked successfully", apiResponse.getMessage());
+        assertEquals(mockedSlot, apiResponse.getData());
+
         verify(parkingLotService).parkCar(licensePlate);
     }
 
@@ -56,24 +65,34 @@ public class ParkingLotControllerTest {
         
         when(parkingLotService.getSlotById(1)).thenReturn(mockedSlot);
 
-        ParkingSlot response = parkingLotController.getSlot(1);
+        ResponseEntity<ApiResponce<ParkingSlot>> responseEntity = parkingLotController.getSlot(1);
 
-        assertNotNull(response);
-        assertEquals(1, response.getSlotId());
+        assertNotNull(responseEntity);
+        assertEquals(200, responseEntity.getStatusCodeValue());  
+        ApiResponce<ParkingSlot> apiResponse = responseEntity.getBody();
+        assertNotNull(apiResponse);
+        assertEquals("Slot retrieved successfully", apiResponse.getMessage());
+        assertEquals(mockedSlot, apiResponse.getData());
     }
 
     @Test
     void testUnparkCarWithValidToken() {
-        String token = "validToken";
+    	 String token = "validToken";
         String licensePlate = "XYZ123";
         ParkingSlot mockedSlot = mock(ParkingSlot.class);
         
         when(jwtUtil.validateToken("validToken")).thenReturn(true);
         when(parkingLotService.unparkCar(licensePlate)).thenReturn(Optional.of(mockedSlot));
 
-        ParkingSlot response = parkingLotController.unparkCar("Bearer " + token, licensePlate);
+        ResponseEntity<ApiResponce<ParkingSlot>> responseEntity = parkingLotController.unparkCar(licensePlate);
 
-        assertNotNull(response);
+        assertNotNull(responseEntity);
+        assertEquals(200, responseEntity.getStatusCodeValue());
+        ApiResponce<ParkingSlot> apiResponse = responseEntity.getBody();
+        assertNotNull(apiResponse);
+        assertEquals("Car unparked successfully", apiResponse.getMessage());
+        assertEquals(mockedSlot, apiResponse.getData());
+
         verify(parkingLotService).unparkCar(licensePlate);
     }
 
