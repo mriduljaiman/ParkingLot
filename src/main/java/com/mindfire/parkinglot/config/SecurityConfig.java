@@ -15,10 +15,8 @@ import com.mindfire.parkinglot.security.JwtAuthenticationFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String[] AUTH_WHITELIST = {
-//             -- 
+
 			"/swagger-ui/**",
-//            "/swagger-resources/**",
-//            "/swagger-ui.html",
             "/v3/api-docs/**",
             "/swagger-config",
             "/webjars/**",

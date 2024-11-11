@@ -26,11 +26,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        String token = getJwtFromRequest(request);
+    	 // Extract JWT token from the request
+    	String token = getJwtFromRequest(request);
           
+    	 // Validate the token and set authentication if it's valid
         if (token != null && jwtUtil.validateToken(token)) {
         	String username = jwtUtil.extractUsername(token);
-//            System.out.println("Extracted username: " + username);
+        	
         	 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                      username, 
                      null,  
