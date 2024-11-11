@@ -23,7 +23,7 @@ public class Constants {
     public static final String PARKING_SUCCESS = "Car parked successfully";
     public static final String PARKING_LOT_FULL = "Parking lot is full";
     public static final String SLOT_RETRIEVED = "Slot retrieved successfully";
-    public static final String SLOT_NOT_FOUND = "Slot not found for the given ID";
+    public static final String SLOT_NOT_FOUND = "Slot not found for the given ID - ";
     public static final String UNPARKING_SUCCESS = "Car unparked successfully";
     public static final String CAR_NOT_FOUND = "Car not found";
     

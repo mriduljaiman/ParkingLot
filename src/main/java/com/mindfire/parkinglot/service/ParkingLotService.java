@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mindfire.parkinglot.constant.Constants;
+import com.mindfire.parkinglot.exception.CarNotFoundException;
 import com.mindfire.parkinglot.exception.SlotNotFoundException;
 import com.mindfire.parkinglot.model.ParkingSlot;
 
@@ -52,14 +53,23 @@ public class ParkingLotService {
 	public Optional<ParkingSlot> unparkCar(String licensePlate) {
 		logger.debug("Attempting to unpark car with license plate: {}", licensePlate);
 
-		// Find the slot where the car with the given license plate is parked and unpark it
-		return parkingSlots.stream().filter(slot -> slot.isOccupied() && slot.getLicensePlate().equals(licensePlate))
-				.findFirst().map(slot -> {
-					slot.unparkCar();
-					logger.info("Car with license plate {} has been unparked from slot {}", licensePlate,
-							slot.getSlotId());
-					return slot;
-				});
+		// Find the slot where the car with the given license plate is parked and unpark
+		// it
+		Optional<ParkingSlot> foundSlot = parkingSlots.stream()
+				.filter(slot -> slot.isOccupied() && slot.getLicensePlate().equals(licensePlate)).findFirst();
+
+		// If the car is not found, throw CarNotFoundException
+		if (foundSlot.isEmpty()) {
+			logger.warn("Car with license plate {} not found", licensePlate);
+			throw new CarNotFoundException(Constants.CAR_NOT_FOUND);
+		}
+
+		// If the car is found, unpark it
+		ParkingSlot slot = foundSlot.get();
+		slot.unparkCar();
+		logger.info("Car with license plate {} has been unparked from slot {}", licensePlate, slot.getSlotId());
+
+		return Optional.of(slot);
 	}
 
 }

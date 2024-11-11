@@ -5,11 +5,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.mindfire.parkinglot.exception.RateLimitException;
+import com.mindfire.parkinglot.service.ParkingLotService;
 import com.mindfire.parkinglot.service.RateLimitService;
 import com.mindfire.parkinglot.util.JwtUtil;
 
@@ -32,6 +35,8 @@ public class RateLimitAspect {
 	
     private final RateLimitService rateLimitService;
     private final JwtUtil jwtUtil;
+    
+    private static final Logger logger = LoggerFactory.getLogger(RateLimitAspect.class);
 
     public RateLimitAspect(RateLimitService rateLimitService, JwtUtil jwtUtil) {
         this.rateLimitService = rateLimitService;
@@ -59,6 +64,7 @@ public class RateLimitAspect {
         String clientId = getClientId(request);
 
         if (!rateLimitService.isAllowed(clientId)) {
+        	logger.warn("Rate limit exceeded for client: {}", clientId);
             throw new RateLimitException("Too many requests. Please try again later.");
         }
     }

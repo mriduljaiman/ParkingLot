@@ -31,32 +31,59 @@ public class JwtAuthenticationFilterTest {
 	        MockitoAnnotations.openMocks(this);
 	    }
 
+	    /**
+	     * Test the filter behavior with a valid token.
+	     * 
+	     * When the token is valid:
+	     * - The `JwtAuthenticationFilter` should allow the request to proceed by calling `filterChain.doFilter`.
+	     */
 	    @Test
 	    void testDoFilterWithValidToken() throws Exception {
+	    	
+	        // Define a valid token and a mock request/response
 	        String token = "validToken";
 	        MockHttpServletRequest request = new MockHttpServletRequest();
 	        MockHttpServletResponse response = new MockHttpServletResponse();
 	        
+	        // Define the behavior of the JwtUtil mock
 	        when(jwtUtil.validateToken(token)).thenReturn(true);
 	        when(jwtUtil.extractUsername(token)).thenReturn("admin");
 
+	        // Add the token to the Authorization header of the request
 	        request.addHeader("Authorization", "Bearer " + token);
+	        
+	        // Call the filter method with the mock request and response
 	        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
+	        // Verify that the filter chain proceeds (no errors occur)
 	        verify(filterChain).doFilter(request, response);
 	    }
 
+	    /**
+	     * Test the filter behavior with an invalid token.
+	     * 
+	     * When the token is invalid:
+	     * - The `JwtAuthenticationFilter` should still pass the request along the filter chain.
+	     * - The request will not be authenticated, but the filter chain should continue.
+	     */
 	    @Test
 	    void testDoFilterWithInvalidToken() throws Exception {
+	    	
+	        // Define an invalid token and a mock request/response
 	        String token = "invalidToken";
 	        MockHttpServletRequest request = new MockHttpServletRequest();
 	        MockHttpServletResponse response = new MockHttpServletResponse();
 	        
+	        // Define the behavior of the JwtUtil mock
 	        when(jwtUtil.validateToken(token)).thenReturn(false);
 
+	        // Add the token to the Authorization header of the request
 	        request.addHeader("Authorization", "Bearer " + token);
+	        
+	        // Call the filter method with the mock request and response
 	        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
+	        // Verify that the filter chain proceeds even with the invalid token
 	        verify(filterChain).doFilter(request, response);
 	    }
 }
